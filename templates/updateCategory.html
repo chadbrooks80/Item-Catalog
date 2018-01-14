@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+	<form action='{{ url_for('updateCategory', category=category) }}' method='POST'>
+
+		Category Name: <input type="text" name="category" value='{{ category }}'>
+		<input type="submit" value="Update Category">
+
+	</form>
+
+{% endblock %}

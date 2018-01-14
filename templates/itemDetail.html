@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h1>Category: {{ category.category }} </h1>
+
+{{ item.item }} <br/>
+{{ item.description }} <br/>
+
+LOGGED IN USERID: {{ login_id }} <br>
+ITEM.USER_ID: {{ item.user_id }}
+
+{% if  item.user_id == login_id %}
+	<a href='{{ url_for('deleteItem', category=category.category, item=item.item) }}'> <button> Delete Item </button> </a>
+	<a href='{{ url_for('updateItem', category=category.category, item=item.item) }}'> <button> Edit Item </button> </a>
+{% endif %}
+
+
+{% endblock %}

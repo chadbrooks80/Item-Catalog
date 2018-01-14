@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+	
+	{% if login_id != None %}
+		<a href='{{ url_for('createItem', category=category) }}'> <button>Create New Item</button></a>
+	
+		
+		<a href='{{ url_for('updateCategory', category=category) }}'><button>Edit Category</button></a>
+		<a href='{{ url_for('deleteCategory', category=category) }}'><button>Delete Category</button></a>
+		<br/><br/>
+	{% endif %}
+
+<h1>Items from {{ category }} </h1>
+
+{% for item in items %}
+
+	<a href='{{ url_for('itemDetail', category=category, item=item.item) }}'>
+	{{ item.item }} </a> <br/>
+
+{% endfor %}
+
+{% endblock %}

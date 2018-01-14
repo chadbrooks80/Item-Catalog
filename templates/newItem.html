@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h1>Create New Item for {{ category }}</h1>
+
+
+<form action='{{ url_for('createItem', category=category) }}' method='POST'>
+
+	Item Name: <input type='text' name='item'> <br/>
+	Description: <input type='text' name='description'> <br/>
+
+	<input type='submit' value='Create New Item'>
+
+</form>
+
+
+{% endblock %}

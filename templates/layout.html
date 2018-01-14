@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Items Catalog</title>
+	
+	{% block head %}{% endblock %}
+
+
+</head>
+<body>
+
+{% if session['id'] %}
+	
+	Hello {{ session['name'] }}! <a href='{{ url_for('logout') }}'>Log Out</a>
+
+{% else %}
+	
+
+	<a href='{{ url_for('login') }}'>Log In</a>
+	<a href='{{ url_for('register') }}'>Register</a>
+
+{% endif %}
+
+{% with messages = get_flashed_messages() %}
+
+		{% if messages %}
+
+			{% for message in messages %}
+
+				<h3>{{ message }}</h3>
+
+			{% endfor %}
+
+		{% endif %}
+
+	{% endwith %}
+
+
+	{% block body %}{% endblock %}
+
+
+</body>
+</html>

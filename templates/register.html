@@ -1,0 +1,74 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+<!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+	<script src="//apis.google.com/js/platform.js?onload=start"> </script>
+{% endblock %}
+
+{% block body %}
+
+	<form action='{{ url_for('register') }}' method='POST'>
+		email: <input type="text" name="email">
+		name: <input type="text" name="name">
+		password: <input type="password" name="password">
+		<input type="submit" name="Log In">
+		
+	</form>
+
+<h1>Log in with Google</h1>
+<div id="result"></div>
+
+<!-- GOOGLE PLUS SIGN IN BUTTON-->
+
+          
+          <div id="signinButton">
+          <span class="g-signin"
+            data-scope="openid email"
+            data-clientid="837601911817-u741p2cf3tqmcjm90o3k9oiju1icdpt9.apps.googleusercontent.com"
+            data-redirecturi="postmessage"
+            data-accesstype="offline"
+            data-cookiepolicy="single_host_origin"
+            data-callback="signInCallback"
+            data-approvalprompt="force">
+          </span>
+        </div>
+        
+
+<script>
+
+	function signInCallback(authResult) {
+		if (authResult['code']) {
+			$('#signinButton').attr('style', 'display: none');
+			//send one-time-use code to server
+			$.ajax({
+				type: 'post',
+				url: '/addGoogleAccount?state={{ session['state'] }}',
+				processData: false,
+				contentType: 'application/octet-stream; charset=utf-8',
+				data: authResult['code'],
+				success: function(result) {
+					if(result) {
+						
+						$("#result").html(result)
+						setTimeout(function() {
+							$("#result").html(result.html)
+							window.location.href = '{{ url_for('showCatalogs') }}';
+						}, 4000);		
+
+					} else if(authResult['error']) {
+						console.log('there was an error ' + authResult['error']);
+					} 
+				}
+
+			});
+		} else {
+			$('#result').html('Failed to make server-side call');
+		}
+	}
+
+</script>
+
+
+
+{% endblock %}

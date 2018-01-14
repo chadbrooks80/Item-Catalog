@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+
+
+<h1>Items from {{ category }} </h1>
+
+
+{% for item in items %}
+
+	<a href='{{ url_for('itemDetail', category=category, item=item.item) }}'>
+	{{ item.item }} </a> <br/>
+
+{% endfor %}
+
+{% endblock %}
