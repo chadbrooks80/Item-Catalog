@@ -1,0 +1,11 @@
+header {
+	color: green;
+	background-color: #ffe6e6;
+	height: 65px;
+	border-radius: 5px;
+}
+
+#flash_messages {
+	color: red;
+	background-color: purple;
+}
