@@ -2,12 +2,13 @@
 
 {% block body %}
 
-	<h1>Add a New Category</h1>
+	<h2>Add a New Category</h2>
 
 	<form action='{{ url_for('createCategory') }}' method='POST'>
-
-		<input type='text' name='category'>
-		<input type='submit' value="Create New Category">
+		<div class="form_input">
+			<input type='text' name='category' placeholder="Enter New Category">
+		</div>
+		<input type='submit' value="Create New Category" class="submit_form">
 		
 	</form>
 

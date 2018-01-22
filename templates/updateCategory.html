@@ -4,8 +4,11 @@
 
 	<form action='{{ url_for('updateCategory', category=category) }}' method='POST'>
 
-		Category Name: <input type="text" name="category" value='{{ category }}'>
-		<input type="submit" value="Update Category">
+		<div class="form_input">
+			Category Name: <br/>
+			<input type="text" name="category" value='{{ category }}'>
+		</div>
+		<input type="submit" value="Update Category" class="submit_form">
 
 	</form>
 

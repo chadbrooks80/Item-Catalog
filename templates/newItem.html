@@ -6,11 +6,14 @@
 
 
 <form action='{{ url_for('createItem', category=category) }}' method='POST'>
+	<div class="form_input">
+		<input type='text' name='item' placeholder="Enter Item Here">
+	</div>
+	<div class="form_input">
+		<input type='text' name='description' placeholder="Enter Description Here">
+	</div>
 
-	Item Name: <input type='text' name='item'> <br/>
-	Description: <input type='text' name='description'> <br/>
-
-	<input type='submit' value='Create New Item'>
+	<input type='submit' value='Create New Item' class="submit_form">
 
 </form>
 

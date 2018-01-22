@@ -88,11 +88,11 @@ button, .submit_form {
 	font-size: 14px;
 }
 
-.login_form {
+.form_input {
 	padding-bottom: 8px;
 }
 
-.login_form input {
+.form_input input {
 	background-color: #efefef;
 	height: 30px;
 	width: 250px;
