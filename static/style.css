@@ -1,11 +1,114 @@
+* {
+	box-sizing: border-box;
+	/*background-color: #EFEFEF;*/
+	/*color: #A9A9A9;*/
+}
+
 header {
-	color: green;
-	background-color: #ffe6e6;
-	height: 65px;
+	padding: 0px;
+	margin: 0;
+	background-color: #efefef;
+	height: 75px;
 	border-radius: 5px;
 }
 
+header #logo {
+	width: 120px;
+	position: relative;
+	bottom: 10px;
+}
+
+header #home {
+	position: relative;
+	width: 50px;
+	left: 40px;
+	bottom: 32px;
+}
+
+header span {
+	font-size: 25px;
+	position: relative;
+	bottom: 35px;
+	left: 20px;
+}
+
 #flash_messages {
-	color: red;
-	background-color: purple;
+	visibility: hidden;
+	background-color: #FF3B3F;
+	height: 40px;
+	margin-left: 200px;
+	color: #fff;
+	padding-left: 20px;
+	padding-top: 7px;
+}
+
+#flash_messages span {
+	position: relative;
+	font-size: 20px;
+	/*padding-top: 100px;*/
+	/*padding-left: 10px;*/
+}
+
+aside {
+	background-color: #CAEBF2;
+	padding: 20px;
+	float: left;
+	width: 200px;
+	position: absolute;
+	height: 100%;
+}
+
+
+#main {
+	margin-left: 200px;
+	padding: 40px;
+	height: 100%;
+	width: 100%;
+}
+
+.list {
+	margin-top: 12px;
+}
+
+.list a {
+	text-decoration: none;
+	color: black;
+	font-size: 30px;
+}
+
+a:hover {
+	color: #FF3B3F;
+}
+
+button, .submit_form {
+	background-color: #FF3B3F;
+	color: white;
+	padding: 8px;
+	border-radius: 8px;
+	font-size: 14px;
+}
+
+.login_form {
+	padding-bottom: 8px;
+}
+
+.login_form input {
+	background-color: #efefef;
+	height: 30px;
+	width: 250px;
+	border-radius: 8px;
+}
+
+.item_detail {
+	font-size: 25px;
+	padding-bottom: 8px;
+}
+
+.label {
+	font-weight: bold;
+}
+
+.confirm_delete {
+	font-size: 24px;
+	padding-bottom: 20px;
 }

@@ -11,9 +11,9 @@
 <h2>Are you sure you want to delete {{ category }}?</h2>
 
 <form action='{{ url_for('deleteCategory', category=category) }}' method='POST'>
-	<input type="Submit" value="Yes, Delete">
+	<input type="Submit" value="Delete" class="submit_form">
 </form>
 
-<a href={{url_for('showItems', category=category)}}><button>No, Cancel</button></a>
+<a href={{url_for('showItems', category=category)}}><button>Cancel</button></a>
 
 {% endblock %}

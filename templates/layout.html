@@ -9,37 +9,55 @@
 <body>
 
 <header>
-	{% if session['id'] %}
-		
-		Hello {{ session['name'] }}! <a href='{{ url_for('logout') }}'>Log Out</a>
+	<img src={{ url_for('static', filename='itemCatalog.png') }} id="logo">
+	<span>
+		{% if session['id'] %}
+			
+			Hello {{ session['name'] }}! <a href='{{ url_for('logout') }}'>Log Out</a>
 
-	{% else %}
-		
+		{% else %}
+			
 
-		<a href='{{ url_for('login') }}'>Log In</a>
-		<a href='{{ url_for('register') }}'>Register</a>
+			<a href='{{ url_for('login') }}'>Log In</a> |
+			<a href='{{ url_for('register') }}'>Register</a>
 
-	{% endif %}
+		{% endif %}
+	</span>
+	<a href="{{ url_for('showCatalogs') }}">
+		<img src={{ url_for('static', filename='home.png') }} id="home">
+	</a>
 </header>
 
+<aside>
+	
+	<h2>Most Recently Added Items</h2>
+	Here's one<br>
+	Here's another<br>
+
+</aside>
+
 <div id='flash_messages'>
-		{% with messages = get_flashed_messages() %}
-
-			{% if messages %}
-
-				{% for message in messages %}
-
-					<h3>{{ message }}</h3>
-
-				{% endfor %}
-
-			{% endif %}
-
+	
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<script>
+				document.getElementById("flash_messages").style.visibility = "visible";
+			</script>
+			{% for message in messages %}
+				<span>{{ message }}</span>
+			{% endfor %}
+		{% endif %}
 	{% endwith %}
 </div>
 
+
+<div id="main">
+
 	{% block body %}{% endblock %}
+</div>
 
-
+{% if flash_messages %}
+	there are flash messages
+{% endif %}
 </body>
 </html>

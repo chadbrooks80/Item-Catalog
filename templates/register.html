@@ -7,16 +7,24 @@
 {% endblock %}
 
 {% block body %}
+	
+	<h2>Please Register Below</h2>
 
 	<form action='{{ url_for('register') }}' method='POST'>
-		email: <input type="text" name="email">
-		name: <input type="text" name="name">
-		password: <input type="password" name="password">
-		<input type="submit" name="Log In">
+		<div class="login_form">
+			<input type="text" name="email" placeholder="Email">
+		</div>
+		<div class="login_form">
+			<input type="text" name="name" placeholder="Name">
+		</div>
+		<div class="login_form">
+			<input type="password" name="password" placeholder="Password">
+		</div>
+		<input type="submit" name="Log In" class="submit_form">
 		
 	</form>
 
-<h1>Log in with Google</h1>
+<h2>Or Log In with Google</h2>
 <div id="result"></div>
 
 <!-- GOOGLE PLUS SIGN IN BUTTON-->

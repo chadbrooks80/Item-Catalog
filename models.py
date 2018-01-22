@@ -61,7 +61,8 @@ class Items(Base):
 			'cat_id': self.category_id,
 			'id': self.id,
 			'title': self.item,
-			'description': self.description
+			'description': self.description,
+			'date_created': self.created
 
 			}
 

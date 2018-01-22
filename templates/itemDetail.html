@@ -2,17 +2,19 @@
 
 {% block body %}
 
-<h1>Category: {{ category.category }} </h1>
+<h2>Category: <a href={{ url_for("showItems", category=category.category) }}>{{ category.category }}</a> </h2>
 
-{{ item.item }} <br/>
-{{ item.description }} <br/>
+<div class="item_detail">
+	<span class="label">Item Name:</span> {{ item.item }}
+</div>
 
-LOGGED IN USERID: {{ login_id }} <br>
-ITEM.USER_ID: {{ item.user_id }}
+<div class="item_detail">
+	<span class="label">Description:</span> {{ item.description }}
+</div>
 
 {% if  item.user_id == login_id %}
-	<a href='{{ url_for('deleteItem', category=category.category, item=item.item) }}'> <button> Delete Item </button> </a>
-	<a href='{{ url_for('updateItem', category=category.category, item=item.item) }}'> <button> Edit Item </button> </a>
+	<a href='{{ url_for('deleteItem', category=category.category, item=item.item) }}'><button>Delete Item</button></a>
+	<a href='{{ url_for('updateItem', category=category.category, item=item.item) }}'><button>Edit Item</button></a>
 {% endif %}
 
 

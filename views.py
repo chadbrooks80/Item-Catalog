@@ -27,12 +27,6 @@ app.secret_key = "make this a random 32 character string later"
 
 
 
-
-
-
-
-
-
 def validateGoogle(code):
 
 	#upgrade the authorization code for access token
@@ -81,18 +75,6 @@ def validateGoogle(code):
 	data = answer.json()
 
 	return data
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -476,6 +458,7 @@ def itemDetail(category, item):
 @app.route('/catalog/<category>/<item>/delete', methods=['GET', 'POST'])
 # @login_required
 def deleteItem(category, item):
+	
 	find_category = session.query(Categories).filter_by(category=category).first()
 	find_item = session.query(Items).filter_by(category_id=find_category.id, item=item).first()
 
@@ -490,8 +473,7 @@ def deleteItem(category, item):
 		flash('%s has been deleted' % find_item.item)
 		return redirect(url_for('showItems', category=category))
 
-	return render_template('deleteItem.html', item=item.item, category=find_category.category)
-
+	return render_template('deleteItem.html', item=find_item.item, category=find_category.category)
 
 @app.route('/catalog/<category>/<item>/edit', methods=['GET', 'POST'])
 @login_required

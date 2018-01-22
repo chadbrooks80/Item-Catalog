@@ -14,19 +14,24 @@
 
 {% block body %}
 
-<h1>The Login Page</h1>
+<h2>Please Log in Below</h2>
 
 
 
 
 
 <form action={{ url_for('login') }} method='POST'}>
-	email: <input type="text" name="email"><br/>
-	password: <input type="password" name="password"><br/>
-	<input type="submit" value="Login">
+	<div class="login_form">
+		<input type="text" name="email" placeholder="Enter Email Here">
+	</div>
+
+	<div class="login_form">
+		<input type="password" name="password" placeholder="Enter Password"><br/>
+	</div>
+	<input type="submit" value="Login" class="submit_form">
 </form>
 
-<h1>Or Login with Google</h1>
+<h2>Or Log in with Google</h2>
 
 <div id='result'></div>
 
