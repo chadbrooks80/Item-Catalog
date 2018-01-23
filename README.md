@@ -13,9 +13,9 @@ this is the main file that is used for running the app with the rest of the pyth
 * models.py
 This file is used to configure the the database using SqlAlchemy`. The Item Catalog App uses sqllite as its database and has three main tables:
 
-1. Users - holds the user information with hashed passwords for security
-2. Categories - holds the category information
-3. Items - holds the items created for each category
+    1. Users - holds the user information with hashed passwords for security
+    2. Categories - holds the category information
+    3. Items - holds the items created for each category
 
 * authenticate.py
 this file holds one main function imported into the views.py: `login_required`.  This file is used as a decorator to any specific routes within this application to ensure users are logged in to perform specific tasks, including adding, editing, and deleting any categories or items. 
@@ -30,7 +30,7 @@ The Item Catalog app also includes a json endpoint that allows users to retreive
 
 `/catalog.json`
 
-*Suported Python Versions*
+# Suported Python Versions
 
 Log Analysis Application has been tested and working on Python versions 2.
 
