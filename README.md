@@ -1,8 +1,8 @@
-#Item Catalog Web App
+# Item Catalog Web App
 
 The item catalog provides a list of items within a variety of categories that can also be created.  This app uses a registration and authentication system, allowing the user to either register within the app themselves, or using Google Oauth 2.0 authentication. 
 
-##Files used within the the Item Catalog App
+## Files used within the the Item Catalog App
 
 This App has three main python files, including: 
 * views.py
@@ -24,7 +24,7 @@ In addition to the python files used the ``client_secrets.json`` file is used fo
 
 There are a large number of html template files utilized within the templates folder, along with any other static files needed, which includes style.css and a couple of image files used. 
 
-##JSON Endpoints
+## JSON Endpoints
 
 The Item Catalog app also includes a json endpoint that allows users to retreive all categories and items stored in JSON format.  Anyone accessing this file must be registered and logged in. to access this JSON endpoint, use the following path: 
 
