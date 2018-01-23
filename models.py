@@ -9,6 +9,7 @@ Base = declarative_base()
 
 
 
+#Users table to hold authentication information of each user. 
 class Users(Base):
 	__tablename__ = 'users'
 	id = Column(Integer, primary_key=True)
@@ -17,10 +18,11 @@ class Users(Base):
 	picture = Column(String)
 	password_hashed = Column(String)
 
+	#hashes password for security
 	def hash_password(self, password):
-		print 'here is your password: %s' % password
 		self.password_hashed = pwd_context.encrypt(password)
 
+	#used for verifying password
 	def verify_password(self, password):
 		print 'password entered: %s' % password
 		print pwd_context.verify(password, self.password_hashed)
@@ -28,12 +30,13 @@ class Users(Base):
 
 
 
-
+#Holds details of all of the categories
 class Categories(Base):
 	__tablename__ = 'categories'
 	id = Column(Integer, primary_key=True)
 	category = Column(String, index=True)
 
+	#used to serilize data for returning json file
 	@property
 	def serialize(self):
 		return {
@@ -41,6 +44,7 @@ class Categories(Base):
 			'name': self.category
 		}
 
+#tables holds details of all of the items (and what category they belong to)
 class Items(Base):
 	__tablename__ = 'items'
 	id = Column(Integer, primary_key=True)
@@ -53,7 +57,7 @@ class Items(Base):
 	users = relationship(Users)
 
 
-	
+	#used to serilize data for returning json file
 	@property
 	def serialize(self):
 
@@ -67,8 +71,6 @@ class Items(Base):
 			}
 
 
-
-
-
+#create database if doesn't exist, then connects. 
 engine = create_engine('sqlite:///itemCatalog.db')
 Base.metadata.create_all(engine)

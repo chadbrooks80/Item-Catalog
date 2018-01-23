@@ -14,8 +14,10 @@ import json
 from flask import make_response
 import requests
 
+#Get Google Client_id from client_secrets.json file
 GOOGLE_CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
 
+#connect to sql database and initiate flask
 engine = create_engine('sqlite:///itemCatalog.db')
 
 Base.metadata.bind = engine
@@ -27,6 +29,7 @@ app.secret_key = "make this a random 32 character string later"
 
 
 
+#used to validate the Google code from teh client_secrets file
 def validateGoogle(code):
 
 	#upgrade the authorization code for access token
@@ -77,7 +80,7 @@ def validateGoogle(code):
 	return data
 
 
-
+#used for oauth connection to google
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
 	
@@ -129,18 +132,6 @@ def gconnect():
 		response.headers['Content-Type'] = 'application/json'
 		return response
 
-
-	#NOTE THIS IS NOT NEEDED SINCE THIS IS ALREADY CHECKED WHEN USER ATTEMPT TO GO TO /login
-	# Check if User is already logged into the system
-	# if login_session.get('credentials') is not None and gplus_id == login_session.get('gplus_id'):
-	# 	response = make_response(json.dumps('User is already logged connected'), 200)
-	# 	response.headers['Content-Type'] = 'application/json'
-	# 	return response
-
-
-	# assign to login session if user is not logged in already
-	# login_session['credentials'] = credentials.access_token
-	# login_session['gplus_id'] = gplus_id
 
 	#get the user info
 	userinfo_url = 'https://www.googleapis.com/oauth2/v1/userinfo'
@@ -199,7 +190,7 @@ def gconnect():
 	login_session['name'] = user.name
 	login_session['id'] = user.id
 
-
+	#initiates welcome screen
 	output = ''
 	output += '<h1>Welcome, '
 	output += login_session['name']
@@ -217,13 +208,11 @@ def gconnect():
 
 	return jsonify(login_result)
 
-
+#used to add the Google Account
 @app.route('/addGoogleAccount', methods=['POST'])
 def addGoogleAccount():
 
-	print "Start of addgoogleAccount function"
-
-
+	
 	#validate State
 	if request.args.get('state') != login_session['state']:
 		return 'Bad State'
@@ -276,15 +265,17 @@ def addGoogleAccount():
 	return "user succesfully registered! Redirecting..."
 
 
+#this returns a json file, which is used in the side-bar of the website (<aside> tag)
 @app.route('/top-ten', methods=['GET', 'POST'])
 def top_ten():
 
 	#first get the latest ten created items
 	ten_items = session.query(Items).order_by(Items.created.desc()).limit(10).all();
 
+	#creates an array with each of the top ten items as objects
 	items_json = [item.serialize for item in ten_items]
 
-	#this grabs the category for the top 10 items (since it only has the category ID and not name)
+	#this grabs the category name for the top 10 items (since it only has the category ID and not name)
 	for i, item in enumerate(items_json): 
 		category = session.query(Categories).filter_by(id = item['cat_id']).first().category
 		items_json[i]['url'] = url_for('itemDetail', category=category, item=item['title'])
@@ -295,7 +286,7 @@ def top_ten():
 	return jsonify(items_json)
 
 
-
+#if someone routes to this url, it will log them out and will give error if they are not logged in (by checking the state)
 @app.route('/logout')
 def logout():
 	
@@ -309,13 +300,13 @@ def logout():
 	return redirect(url_for('showCatalogs'))
 
 
-
+#used to register a new user account (post to send the information)
 @app.route('/register', methods=['GET', 'POST'])
 def register():
 
 	if request.method=='POST':
 		
-		#Name, Email, and Password should not be black
+		#Name, Email, and Password should not be blank
 		if not request.form['email'] or not request.form['password'] or not request.form['name']:
 			flash('email and password cannot be blank')
 			return redirect('register')
@@ -333,13 +324,15 @@ def register():
 		login_session['id'] = user.id
 		login_session['name'] = user.name
 		flash('Registration was Succesful!')
-		return redirect('/')
+		#redirects to the home page
+		return redirect(url_for('showCatalogs'))
 
 	#if Get request, will render the registration form.
+
 	#check if they are already logged in
 	if 'id' in login_session:
 		flash('error: you are already logged in as %s' % login_session['name'])
-		return redirect('/')
+		return redirect(url_for('showCatalogs'))
 	return render_template('register.html')
 
 	#creates a secured State (if one doesn't exist):
@@ -347,7 +340,7 @@ def register():
 		login_session['state'] = ''.join( random.choice(string.ascii_uppercase + string.digits) for x in range(32) )
 
 
-#used for a user to login or register
+#used for a user to login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 
@@ -361,17 +354,16 @@ def login():
 	if 'state' not in login_session:
 		login_session['state'] = ''.join( random.choice(string.ascii_uppercase + string.digits) for x in range(32) )
 
+	#post request used for logging them in
 	if request.method == 'POST':
 		
-		
+		#first looks for user email to see if exists
 		user = session.query(Users).filter_by(email=request.form.get('email')).first()
-		
-
 		if not user:
 			flash('Error: Email does not exist')
 			return redirect(url_for('login'))
 
-		
+		#verifies password
 		if not user.verify_password(request.form.get('password')):
 			flash('Invalid Password')
 			return redirect(url_for('login'))			
@@ -383,23 +375,20 @@ def login():
 
 	return render_template('login.html')
 
-# @app.route('/register', methods=['GET', 'POST'])
-# def registerAccount():
-# 	user = Users(email=request.form['email'])
-
-
-
+#for the homepage
 @app.route('/')
 def showCatalogs():
 	categories = session.query(Categories)
 	
+	#renders the public_homepage if they are not logged in (indicating that they can't create categories)
 	if 'id' not in login_session:
 		return render_template('public_home.html', categories=categories)	
 
+	#if they are logged in, allows them to use home page (allowing them to create categories)
 	return render_template('home.html', categories=categories)
 
 
-#creates new Category
+#creates new Category (@login_requires means they must be logged in to do this)
 @app.route('/catalog/new', methods=['POST', 'GET'])
 @login_required
 def createCategory():
@@ -410,12 +399,15 @@ def createCategory():
 		flash('succesfully added category %s' % request.form['category'])
 		return redirect(url_for('showItems', category=request.form['category']))
 
+	#if get request
 	return render_template('newCategory.html')
 
 
+#allows to delete a category (with confirmation)
 @app.route('/catalog/<category>/delete', methods=['GET', 'POST'])
 @login_required
 def deleteCategory(category):
+	#finds category from url
 	del_category = session.query(Categories).filter_by(category=category).first()
 
 	if request.method == 'GET':
@@ -426,6 +418,7 @@ def deleteCategory(category):
 	flash('%s has been succesfully deleted' % category)
 	return redirect(url_for('showCatalogs'))
 
+#allows to edit category
 @app.route('/catalog/<category>/edit', methods=['GET', 'POST'])
 @login_required
 def updateCategory(category):
@@ -439,7 +432,7 @@ def updateCategory(category):
 	flash('Category has been succesfully changed to %s' % request.form['category'])
 	return redirect(url_for('showItems', category=request.form['category']))
 
-#this will show all of the items available. 
+#this will show all of the items available in category. 
 @app.route('/catalog/<category>/items')
 def showItems(category):
 	category = session.query(Categories).filter_by(category=category).first()
@@ -447,7 +440,7 @@ def showItems(category):
 	
 	return render_template('items.html', category=category.category, items=items, login_id =login_session.get('id'))
 
-
+#allows to create new item if logged in
 @app.route('/catalog/<category>/items/new', methods=['POST', 'GET'])
 @login_required
 def createItem(category):
@@ -463,7 +456,7 @@ def createItem(category):
 	#GET request
 	return render_template('newItem.html', category=category)
 
-
+#shows details of the item and description
 @app.route('/catalog/<category>/<item>')
 def itemDetail(category, item):
 	
@@ -474,14 +467,15 @@ def itemDetail(category, item):
 	# return "Category: %s, Item: %s" % (find_category.category, find_item.item)
 	
 
-
+#allows to delete item with login required authentication
 @app.route('/catalog/<category>/<item>/delete', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def deleteItem(category, item):
-	
+	#finds the item and details of the category 
 	find_category = session.query(Categories).filter_by(category=category).first()
 	find_item = session.query(Items).filter_by(category_id=find_category.id, item=item).first()
 
+	#determines if someone is allowed to delete (works for both get and post since it does this first)
 	if login_session.get('id') != find_item.user_id:
 			flash("error: you do not have permission to Delete item!")
 			return redirect(url_for('itemDetail', category=category, item=item))
@@ -493,8 +487,10 @@ def deleteItem(category, item):
 		flash('%s has been deleted' % find_item.item)
 		return redirect(url_for('showItems', category=category))
 
+	#get request
 	return render_template('deleteItem.html', item=find_item.item, category=find_category.category)
 
+#for editing a item
 @app.route('/catalog/<category>/<item>/edit', methods=['GET', 'POST'])
 @login_required
 def updateItem(category, item):
@@ -502,7 +498,7 @@ def updateItem(category, item):
 	find_category = session.query(Categories).filter_by(category=category).first()
 	find_item = session.query(Items).filter_by(category_id = find_category.id, item=item).first()
 
-	#ensures any post request changes are made by the right user
+	#ensures any request changes are made by the right user for both get and post requests
 	if login_session.get('id') != find_item.user_id:
 			flash("error: you do not have permission to Edit item!")
 			return redirect(url_for('itemDetail', category=category, item=item))
@@ -514,30 +510,36 @@ def updateItem(category, item):
 		flash('item has been updated to %s' % request.form['item'])
 		return redirect(url_for( 'itemDetail', category=category, item=request.form['item']))
             
-
+	#get request
 	return render_template('updateItem.html', category=category, item=find_item)
 
+#this allows anyone that has an account to receive a full json file of the entire categories and items listed in the database
 @app.route('/catalog.json')
 @login_required
 def getItemsJson():
 	categories = session.query(Categories).all()
 	
+	#sets up the template to place categories into an arrary
 	categories_json = { 'Category': [] }
 	
+	#goes through each category and grabs all the items
 	for category in categories:
 		
 		#this provides the current index of categories_json since the index starts at zero
 		category_index = len(categories_json['Category'])
 		
+		#serializes each category
 		categories_json['Category'].append(category.serialize)
 
+		#searches for all items in categories and serizes them within the category
 		items = session.query(Items).filter_by(category_id=category.id).all()
 		categories_json['Category'][category_index]['Item'] = [item.serialize for item in items]
 
+	#returns json file to requester
 	return jsonify(categories_json)
 
 
-
+#Used to start the app.
 if __name__ == '__main__':
 	app.debug = True
 	app.run(host='0.0.0.0', port=5000)
