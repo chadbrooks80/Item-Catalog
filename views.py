@@ -276,6 +276,26 @@ def addGoogleAccount():
 	return "user succesfully registered! Redirecting..."
 
 
+@app.route('/top-ten', methods=['GET', 'POST'])
+def top_ten():
+
+	#first get the latest ten created items
+	ten_items = session.query(Items).order_by(Items.created.desc()).limit(10).all();
+
+	items_json = [item.serialize for item in ten_items]
+
+	#this grabs the category for the top 10 items (since it only has the category ID and not name)
+	for i, item in enumerate(items_json): 
+		category = session.query(Categories).filter_by(id = item['cat_id']).first().category
+		items_json[i]['url'] = url_for('itemDetail', category=category, item=item['title'])
+		print(item['title'])
+
+		
+	
+	return jsonify(items_json)
+
+
+
 @app.route('/logout')
 def logout():
 	
@@ -514,8 +534,6 @@ def getItemsJson():
 		items = session.query(Items).filter_by(category_id=category.id).all()
 		categories_json['Category'][category_index]['Item'] = [item.serialize for item in items]
 
-		
-	
 	return jsonify(categories_json)
 
 
