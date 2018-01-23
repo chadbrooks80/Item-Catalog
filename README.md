@@ -30,7 +30,7 @@ The Item Catalog app also includes a json endpoint that allows users to retreive
 
 `/catalog.json`
 
-# Suported Python Versions
+## Suported Python Versions
 
 Log Analysis Application has been tested and working on Python versions 2.
 
