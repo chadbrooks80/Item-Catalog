@@ -252,7 +252,7 @@ def addGoogleAccount():
     user = session.query(Users).filter_by(email=data['email']).first()
 
     if user:
-        return "error: user already exists, <a href='%s'>Login Instead</a>"% url_for(
+        return "error: user already exists, <a href='%s'>Login Instead</a>" % url_for(
             'login')
 
     # if user does not exists, creates registers user and logs them in
@@ -414,7 +414,9 @@ def showCatalogs():
 @login_required
 def createCategory():
     if request.method == 'POST':
-        category = Categories(category=request.form['category'])
+        category = Categories(
+            category=request.form['category'],
+            user_id=login_session['id'])
         session.add(category)
         session.commit()
         flash('succesfully added category %s' % request.form['category'])
@@ -428,12 +430,18 @@ def createCategory():
 
 
 # allows to delete a category (with confirmation)
-@app.route('/catalog/<category>/delete', methods=['GET', 'POST'])
+@app.route('/catalog/<path:category>/delete', methods=['GET', 'POST'])
 @login_required
 def deleteCategory(category):
     # finds category from url
     del_category = session.query(Categories).filter_by(
         category=category).first()
+
+    # finds out if user is able to delete and if not redirects to the category
+    # page
+    if login_session.get('id') != del_category.user_id:
+        flash("error, You are not allowed to Delete this Category!")
+        return redirect(url_for('showItems', category=category))
 
     if request.method == 'GET':
         return render_template('deleteCategory.html', category=category)
@@ -446,11 +454,17 @@ def deleteCategory(category):
 # allows to edit category
 
 
-@app.route('/catalog/<category>/edit', methods=['GET', 'POST'])
+@app.route('/catalog/<path:category>/edit', methods=['GET', 'POST'])
 @login_required
 def updateCategory(category):
     edit_category = session.query(
         Categories).filter_by(category=category).first()
+
+    # finds out if user is able to delete and if not redirects to the category
+    # page
+    if login_session.get('id') != edit_category.user_id:
+        flash("error, You are not allowed to Edit this Category!")
+        return redirect(url_for('showItems', category=category))
 
     if request.method == 'GET':
         return render_template('updateCategory.html', category=category)
@@ -465,7 +479,7 @@ def updateCategory(category):
 # this will show all of the items available in category.
 
 
-@app.route('/catalog/<category>/items')
+@app.route('/catalog/<path:category>/items')
 def showItems(category):
     category = session.query(Categories).filter_by(category=category).first()
     items = session.query(Items).filter_by(category_id=category.id)
@@ -479,7 +493,7 @@ def showItems(category):
 # allows to create new item if logged in
 
 
-@app.route('/catalog/<category>/items/new', methods=['POST', 'GET'])
+@app.route('/catalog/<path:category>/items/new', methods=['POST', 'GET'])
 @login_required
 def createItem(category):
 
@@ -506,7 +520,7 @@ def createItem(category):
 # shows details of the item and description
 
 
-@app.route('/catalog/<category>/<item>')
+@app.route('/catalog/<path:category>/<path:item>')
 def itemDetail(category, item):
 
     find_category = session.query(
@@ -522,9 +536,14 @@ def itemDetail(category, item):
 
 
 # allows to delete item with login required authentication
-@app.route('/catalog/<category>/<item>/delete', methods=['GET', 'POST'])
+@app.route(
+    '/catalog/<path:category>/<path:item>/delete',
+    methods=[
+        'GET',
+        'POST'])
 @login_required
 def deleteItem(category, item):
+
     # finds the item and details of the category
     find_category = session.query(
         Categories).filter_by(category=category).first()
@@ -553,7 +572,11 @@ def deleteItem(category, item):
 # for editing a item
 
 
-@app.route('/catalog/<category>/<item>/edit', methods=['GET', 'POST'])
+@app.route(
+    '/catalog/<path:category>/<path:item>/edit',
+    methods=[
+        'GET',
+        'POST'])
 @login_required
 def updateItem(category, item):
 

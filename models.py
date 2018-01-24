@@ -33,6 +33,8 @@ class Categories(Base):
     __tablename__ = 'categories'
     id = Column(Integer, primary_key=True)
     category = Column(String, index=True)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    users = relationship(Users)
 
     # used to serilize data for returning json file
     @property
